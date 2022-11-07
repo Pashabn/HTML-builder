@@ -7,24 +7,11 @@ const copyDir = async (_path) => {
 
     await fs.promises.mkdir(path.join(_path, 'files-copy'), {recursive: true})
 
-    await fs.promises.readdir(path.join(_path, 'files-copy'), (err, files) => {
-        files.forEach(async file => {
-            await fs.promises.unlink(path.join(_path, 'files-copy', file))
-        })
-    })
-    await fs.promises.readdir(path.join(_path, 'files'), (err, files) => {
-        if (err)
-            console.log(err);
-        else {
-            files.forEach(async file => {
-                await fs.promises.copyFile(path.join(_path, 'files', file), path.join(_path, 'files-copy', file), (err) => {
-                    console.log(err)
-                })
-            })
-        }
-    })
+    const files = await fs.promises.readdir(path.join(_path, 'files'))
 
-
+    for (const file of files) {
+        await fs.promises.copyFile(path.join(_path, 'files', file), path.join(_path, 'files-copy', file))
+    }
 }
 
 copyDir(path.resolve(__dirname))
